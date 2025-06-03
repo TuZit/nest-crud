@@ -1,20 +1,21 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpException,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  ValidationPipe
-} from '@nestjs/common';
-import { Product1Service } from './product-1.service';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import Product1 from './Product-1';
 import { CreateProductDTO } from './dto/create-product.dto';
+import { Product1Service } from './product-1.service';
 
 @Controller('product-1')
+// @UsePipes(
+//   new ValidationPipe({
+//     transform: true,
+//     exceptionFactory: (validatorError: ValidationError[] = []) => {
+//       return new BadGatewayException(
+//         validatorError.map((err) => ({
+//           [err.property]: err.constraints ? Object.values(err.constraints) : []
+//         }))
+//       );
+//     }
+//   })
+// )
 export class Product1Controller {
   constructor(private readonly product1Service: Product1Service) {}
 
@@ -35,7 +36,7 @@ export class Product1Controller {
   }
 
   @Post()
-  create(@Body(new ValidationPipe()) productData: CreateProductDTO) {
+  create(@Body() productData: CreateProductDTO) {
     return this.product1Service.create(productData);
   }
 

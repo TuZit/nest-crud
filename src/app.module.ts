@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
@@ -9,6 +9,8 @@ import { ProductModule } from './modules/product/product.module';
 // import { Product } from './Product';
 import { Product1Module } from './modules/product-1/product-1.module';
 import Product1 from './modules/product-1/Product-1';
+import { LoggingMiddleware } from './middware/logging/logging.middleware';
+import { RoleMiddleware } from './middware/role/role.middleware';
 
 @Module({
   imports: [
@@ -31,26 +33,17 @@ import Product1 from './modules/product-1/Product-1';
   controllers: [AppController],
   providers: [AppService]
 })
-// @Module({
-//   imports: [
-//     UserModule,
-//     CatsModule,
-//     TypeOrmModule.forRoot({
-//       type: 'postgres',
-//       host: 'postgres-master.int.selless.dev',
-//       port: 5432,
-//       username: 'scm',
-//       password: '123456',
-//       database: 'scm',
-//       // entities: [join(__dirname, '**', '*.ts')],
-//       // entities: [__dirname + '/../entities/*.ts'],
-//       entities: [Product],
-//       synchronize: false,
-//       migrationsRun: false
-//     }),
-//     ProductModule
-//   ],
-//   controllers: [AppController],
-//   providers: [AppService]
-// })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware, RoleMiddleware).forRoutes(
+      {
+        path: '/products',
+        method: RequestMethod.ALL
+      },
+      {
+        path: '/products/*',
+        method: RequestMethod.ALL
+      }
+    );
+  }
+}
