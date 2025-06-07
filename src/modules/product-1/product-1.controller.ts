@@ -1,9 +1,22 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards
+} from '@nestjs/common';
 import Product1 from './Product-1';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { Product1Service } from './product-1.service';
+import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('product-1')
+@UseGuards(JWTAuthGuard)
 // @UsePipes(
 //   new ValidationPipe({
 //     transform: true,
