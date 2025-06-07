@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CatsModule } from './modules/cats/cats.module';
 import { ProductModule } from './modules/product/product.module';
 import Product1 from './modules/product-1/Product-1';
 import { Product1Module } from './modules/product-1/product-1.module';
@@ -13,7 +12,6 @@ import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    CatsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
