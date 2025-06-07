@@ -1,5 +1,5 @@
 import { UsersService } from './../users/users.service';
-import { Body, Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Users } from 'src/entity/users.entities';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
@@ -29,5 +29,17 @@ export class AuthController {
   @Get('/profile')
   profile(@Request() req: any) {
     return req.user;
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() { refreshToken }: { refreshToken: string }) {
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh Token is required');
+    }
+    const user = await this.authService.verifyRefreshToken(refreshToken);
+    if (!user) {
+      throw new BadRequestException('Invalid refresh token');
+    }
+    return this.authService.login(user);
   }
 }

@@ -39,4 +39,26 @@ export class UsersService {
     }
     return null;
   }
+
+  async saveRefreshToken(refreshToken: string, userId: number) {
+    const user = await this.usersRepository.findOneBy({
+      id: userId ?? ''
+    });
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.refresh_token = hashedToken;
+    return this.usersRepository.save(user);
+  }
+
+  async verifyRefreshToken(refreshToken: string, userId: number) {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (user) {
+      const status = await bcrypt.compare(refreshToken, user.refresh_token);
+      return status ? true : false;
+    }
+
+    return false;
+  }
 }

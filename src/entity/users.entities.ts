@@ -19,4 +19,7 @@ export class Users {
 
   @Column()
   updated: Date;
+
+  @Column({ nullable: true })
+  refresh_token: string;
 }
