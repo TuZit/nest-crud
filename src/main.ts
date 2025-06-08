@@ -3,9 +3,12 @@ import { AppModule } from './app.module';
 import { BadGatewayException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { LoggingMiddleware } from './middware/logging/logging.middleware';
+import { AllExceptionsFilter } from './exception/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
